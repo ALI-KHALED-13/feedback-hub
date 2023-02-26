@@ -1,0 +1,10 @@
+require('dotenv').config(0);
+
+const express = require("express");
+
+const app = express();
+
+app.listen(process.env.PORT, ()=> {
+  console.log("listening on port " + process.env.PORT);
+  console.log("hi");
+})
