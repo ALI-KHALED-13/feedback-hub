@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  getProducts,
+  getAllProducts,
   getProduct,
   addProduct,
   modifyProduct,
@@ -13,8 +13,8 @@ const {
 
 
 
-// get all products
-router.get("/", getProducts);
+// main page
+router.get("/", getAllProducts);
 
 //get one product
 router.get("/:id", getProduct);
