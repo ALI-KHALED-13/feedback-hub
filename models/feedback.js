@@ -19,10 +19,12 @@ const feedbackSchema = new mongoose.Schema({
     ref: "product",
     required: true
   },
-  tags: [String], // to be changed to [TagsSchema]
+  tags: {
+    type: [String],
+  },
   status: {
-    type: String, // to be changed to its own model/schema, which elena will fetch to display the dropdown options and roadmap page
-    default: "suggestion"
+    type: mongoose.Types.ObjectId,
+    ref: "status",
   },
   upvotes: {
       type: [mongoose.Types.ObjectId],
@@ -32,6 +34,6 @@ const feedbackSchema = new mongoose.Schema({
     type: [mongoose.Types.ObjectId],
     ref: "comment",
   }
-});
+}, {timestamps: true});
 
 module.exports = mongoose.model("feedback", feedbackSchema);
