@@ -7,7 +7,6 @@ const getAllProducts = async (req, res) => {
   res.status(200).json(products);
 }
 
-// it might be obsolete
 const getProduct = async (req, res) => {
   
   const id = req.params.id;
