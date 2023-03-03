@@ -10,8 +10,16 @@ const handleError =(err, res)=> {
   let statusCode, message;
   switch (err.code){
     case undefined:
-      statusCode = 500; // programmtic error
-      message = "internal server Error: " + err.message;
+      if (err.name === "ValidationError"){
+        statusCode = 400;
+        message = Object.keys(err.errors).reduce((msg, key)=> {
+          msg += err.errors[key].message + " ";
+          return msg;
+        }, "").trim();
+      } else {// programmtic error
+        statusCode = 500; 
+        message = "internal server Error: " + err.message;
+      }
       break;
     case 11000: // request tried to dublicate a saved unique key
       statusCode = 422;
