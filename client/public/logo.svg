@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+ <!-- Created with SVG Editor - http://github.com/mzalive/SVG Editor/ -->
+ <g class="layer">
+  <title>background</title>
+  <rect fill="none" height="202" id="canvas_background" width="202" x="-1" y="-1"/>
+  <g display="none" id="canvasGrid">
+   <rect fill="url(#gridpattern)" height="100%" id="svg_6" stroke-width="0" width="100%" x="0" y="0"/>
+  </g>
+ </g>
+ <g class="layer">
+  <title>Layer 1</title>
+  <text fill="#000000" font-family="Helvetica, Arial, sans-serif" font-size="24" id="svg_1" stroke="#000" stroke-width="0" text-anchor="start" transform="matrix(1 0 0 1 0 0) matrix(13.511 0 0 4.72467 -3346.68 -630.533)" x="267.5" xml:space="preserve" y="189.78"/>
+  <text fill="#3a4374" font-family="Helvetica, Arial, sans-serif" font-size="24" font-weight="bold" id="svg_2" stroke="#000" stroke-width="0" text-anchor="start" transform="matrix(1 0 0 1 0 0) matrix(6.67133 0 0 6.46691 -115.831 23.6838)" x="17.49" xml:space="preserve" y="25.84">db</text>
+  <text fill="#3a4374" font-family="Helvetica, Arial, sans-serif" font-size="24" font-weight="bold" id="svg_3" stroke="#000" stroke-width="0" text-anchor="start" transform="matrix(1 0 0 1 0 0) matrix(-6.67133 -8.17002e-16 7.91968e-16 -6.46691 316.141 177.808)" x="17.79" xml:space="preserve" y="25.84">db</text>
+  <line fill="none" id="svg_4" stroke="#3a4374" stroke-width="22" transform="matrix(1 0 0 1 0 0)" x1="74.5" x2="126.5" y1="98.05" y2="98.05"/>
+  <ellipse cx="45.7" cy="149.5" fill="#c75af6" id="svg_8" rx="22.5" ry="31" stroke="#3a4374"/>
+  <ellipse cx="46.2" cy="50.5" fill="#d73737" id="svg_9" rx="22.5" ry="31" stroke="#3a4374" transform="matrix(1 0 0 1 0 0)"/>
+  <ellipse cx="153.2" cy="50.5" fill="#4661e6" id="svg_10" rx="22.5" ry="31" stroke="#3a4374"/>
+  <ellipse cx="153.2" cy="149.5" fill="#f49f85" id="svg_11" rx="22.5" ry="31" stroke="#3a4374"/>
+ </g>
+</svg>
