@@ -1,35 +1,32 @@
 const Product = require("../../models/product");
 const User = require("../../models/user");
+const { DB404Error } = require("../utils/handleErrors");
 
 const getAllProducts = async (req, res) => {
-  const products = await Product.find(req.body).populate("owner"); // should I populate contributers too ? here or in the feedback board? design decision
+  const products = await Product.find(req.query).populate("owner"); // should I populate contributers too ? main page or in the feedback board? design decision
   res.status(200).json(products);
 }
 
 const getProduct = async (req, res) => {
-  try {
-    const id = req.params.id;
-    const product = await Product.findById(id);
-    res.status(200).json(product);
-  } catch (err){
-    res.status(400).json(err)
-  }
+  
+  const id = req.params.id;
+  const product = await Product.findById(id).populate("feedback");
 
+  if (product === null) throw new DB404Error("product is not found")
+
+  res.status(200).json(product);
 }
 
 const addProduct = async (req, res) => {
-  try {
-    const product = await Product.create(req.body);
-    const owner = await User.findById(req.body.owner);
-    
-    product.save();
-    owner.products = [...owner.products, product.id]
-    owner.save();
-    res.status(200).json(product);
-  } catch(err){
-    res.status(400).json(err)
+  const owner = await User.findById(req.body.owner);
+  if (owner === null) {
+    throw new DB404Error("user is not found, are you signed in?")
   }
+  const product = await Product.create(req.body);
 
+  owner.products = [...owner.products, product.id]
+  owner.save();
+  res.status(200).json(product); 
 }
 
 const modifyProduct = (req, res) => {

@@ -5,7 +5,7 @@ const getAllTags = async (req, res)=> {
   res.status(200).json(tags);
 }
 
-const addTags = async (req, res)=> {
+const addTags = async (req, res)=> { // two accepted formulas {name: "lena"} || ["lena", "mop"]
   const tagsToBeAdded = Object.values(req.body);
   try {
     for (let tagName of tagsToBeAdded){

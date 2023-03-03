@@ -15,7 +15,12 @@ const productSchema = new mongoose.Schema({
   contributers: {
     type: [mongoose.Types.ObjectId],
     ref: "user",
+  },
+  feedback : {
+    type: [mongoose.Types.ObjectId],
+    ref: "feedback",
   }
 }, {timestamps: true});
+
 
 module.exports = mongoose.model("product", productSchema)
