@@ -1,4 +1,5 @@
 const express = require("express");
+const { catchErrors } = require("../utils/handleErrors");
 const router = express.Router();
 
 const {
@@ -11,21 +12,20 @@ const {
 
 
 
-
-
 // main page
-router.get("/", getAllProducts);
+router.get("/", catchErrors(getAllProducts));
 
 //get one product
-router.get("/:id", getProduct);
+router.get("/:id", catchErrors(getProduct));
 
 // add a new product stream
-router.post("/", addProduct);
+router.post("/", catchErrors(addProduct));
 
 // modify a product info (contributers, title?)
-router.put("/:id", modifyProduct)
+router.put("/:id", catchErrors(modifyProduct));
 
 // delete a product 
-router.delete("/:id", deleteProduct)
+router.delete("/:id", catchErrors(deleteProduct));
+
 
 module.exports = router;
