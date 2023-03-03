@@ -22,9 +22,9 @@ router.get("/:id", catchErrors(getFeedback));
 router.post("/", catchErrors(addFeedback));
 
 // modify a Feedback info (contributers, title?)
-router.put("/:id", modifyFeedback)
+router.put("/:id", catchErrors(modifyFeedback))
 
 // delete a Feedback 
-router.delete("/:id", deleteFeedback)
+router.delete("/:id", catchErrors(deleteFeedback))
 
 module.exports = router;
