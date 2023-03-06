@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const StyledProductPageContainer = styled.div`
   display: flex;
@@ -9,6 +9,6 @@ export const StyledProductPageContainer = styled.div`
 export const StyledProductPage = styled.div`
   display: flex;
   gap: 3rem;
-  width: 111rem;
+  max-width: 111rem;
   padding: 2rem 1rem;
 `;

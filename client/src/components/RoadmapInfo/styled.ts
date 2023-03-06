@@ -1,5 +1,6 @@
-import styled from "styled-components";
-import { StyledSemiBoldParagraph, StyledParagraph1 } from "../Typo";
+import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+import { setHeading3, setStyledSemiBoldParagraph, setStyledParagraph1 } from '../Typo';
 
 export const StyledRoadmapInfo = styled.section`
   display: flex;
@@ -16,26 +17,32 @@ export const StyledRoadmapHeader = styled.div`
   align-items: baseline;
 `;
 
-export const StyledLink = styled(StyledSemiBoldParagraph)`
-  color: ${(props) => props.theme.blue};
+export const StyledRoadmapHeading = styled.h3`
+  ${setHeading3()};
+`;
+
+export const StyledLink = styled(Link)`
+  ${setStyledSemiBoldParagraph()};
+  color: ${({theme}) => theme.blue};
   padding: 0.5rem;
 `;
 
 export const StyledStatusList = styled.ul`
   list-style-type: none;
-  color: ${(props) => props.theme.blue};
+  color: ${({theme}) => theme.blue};
 `;
 
 export const StyledStatusItem = styled.li`
   display: flex;
   justify-content: space-between;
   padding: 0.4rem;
-  color: ${(props) => props.theme.blue};
+  color: ${({theme}) => theme.blue};
 `;
 
-export const StyledStatusName = styled(StyledParagraph1)`
+export const StyledStatusName = styled.p`
+  ${setStyledParagraph1()};
   position: relative;
-  color: ${(props) => props.theme.gray};
+  color: ${({theme}) => theme.gray};
   padding: 0 0 0 2.4rem;
 
   &::before {
@@ -48,11 +55,12 @@ export const StyledStatusName = styled(StyledParagraph1)`
     height: 0.8rem;
     border-radius: 50%;
 
-    background-color: ${(props) => props.color};
+    background-color: ${({color}) => color};
   }
 `;
 
-export const StyledStatusNumber = styled(StyledParagraph1)`
+export const StyledStatusNumber = styled.p`
+  ${setStyledParagraph1()};
   font-weight: 700;
-  color: ${(props) => props.theme.gray};
+  color: ${({theme}) => theme.gray};
 `;

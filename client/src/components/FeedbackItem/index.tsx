@@ -1,26 +1,31 @@
-import { IFeedback } from "types";
+import { IFeedback } from 'types';
 import {
   StyledFeedbackItem,
   StyledFeedbackTitle,
   StyledFeedbackDescription,
   StyledCommmentSection,
   StyledCommentsNumber,
-} from "./styled";
+} from './styled';
 
-type FeedbackItemProps = {
-  feedback: IFeedback;
-};
+// The component is not ready yet
 
-const FeedbackItem = ({feedback}: FeedbackItemProps) => {
-  <StyledFeedbackItem>
-    {/* <Upvote /> */}
-    <StyledFeedbackTitle>{feedback.title}</StyledFeedbackTitle>
-    <StyledFeedbackDescription>{feedback.description}</StyledFeedbackDescription>
-    <StyledCommmentSection>
-      {/* <img alt="comments" src={comments}> */}
-      <StyledCommentsNumber>4</StyledCommentsNumber>
-    </StyledCommmentSection>
-  </StyledFeedbackItem>
+interface FeedbackItemProps {
+  feedbackItem: IFeedback;
+}
+
+const FeedbackItem = ({feedbackItem}: FeedbackItemProps) => {
+  return (
+    <StyledFeedbackItem>
+      {/* <Upvote /> */}
+      <div>{feedbackItem.upvotes.length}</div>
+      <StyledFeedbackTitle>{feedbackItem.title}</StyledFeedbackTitle>
+      <StyledFeedbackDescription>{feedbackItem.description}</StyledFeedbackDescription>
+      <StyledCommmentSection>
+        {/* <img alt="comments" src={comments}> */}
+        <StyledCommentsNumber>{feedbackItem.comments.length}</StyledCommentsNumber>
+      </StyledCommmentSection>
+    </StyledFeedbackItem>
+  );
 };
 
 export default FeedbackItem;

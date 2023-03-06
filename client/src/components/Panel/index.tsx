@@ -1,24 +1,24 @@
-import { useTheme } from "styled-components";
-import Button from "../Button";
-import Dropdown from "../Dropdown";
-import { Heading3 } from "../Typo";
-import { StyledPanel, StyledPanelWrapper } from "./styled";
+import Button from '../Button';
+import Dropdown from '../Dropdown';
+import { StyledPanel, StyledPanelWrapper, StyledPanelHeading } from './styled';
+import { useTheme } from 'styled-components';
+import { sortingOptions as options} from '../../data';
 
-const options = ['Most Upvotes', 'Least Upvotes', 'Most Comments', 'Least Comments'];
+interface PanelProps {
+  feedbackNumber: number;
+}
 
-const Panel = () => {
-  
-  const suggestionsNumber = 6; // hardcoded
+const Panel = ({feedbackNumber}: PanelProps) => {
 
   const theme = useTheme();
 
   return (
     <StyledPanel>
       <StyledPanelWrapper>
-        <Heading3 style={{color: 'white'}}>{suggestionsNumber} Suggestions</Heading3>
-        <Dropdown label="Sort by:" options={options} />
+        <StyledPanelHeading>{feedbackNumber} Suggestions</StyledPanelHeading>
+        <Dropdown label="Sort by: " options={options} />
       </StyledPanelWrapper>
-      <Button color={theme.violet} text="+ Add feedback" />
+      <Button color={theme.violet} hoverColor={theme.lightViolet} text="+ Add feedback" />
     </StyledPanel>
   );
 };

@@ -1,4 +1,4 @@
-import { Colors, createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from 'styled-components';
 import JostRegularWoff2 from './fonts/Jost-Regular.woff2';
 import JostRegularWoff from './fonts/Jost-Regular.woff';
 import JostRegularTtf from './fonts/Jost-Regular.ttf';
@@ -9,7 +9,7 @@ import JostSemiBoldWoff2 from './fonts/Jost-SemiBold.woff2';
 import JostSemiBoldWoff from './fonts/Jost-SemiBold.woff';
 import JostSemiBoldTtf from './fonts/Jost-SemiBold.ttf';
 
-export const colors: Colors = {
+export const colors = {
   red: '#D73737',
   lightRed: '#E98888',
   peach: '#F49F85',
@@ -61,6 +61,7 @@ const GlobalStyles = createGlobalStyle`
     padding: 0;
     box-sizing: border-box;
     font-family: 'Jost Regular', sans-serif;
+    font-size: 1.6rem;
     color: ${colors.navy};
     scrollbar-width: thin;
     scrollbar-color: ${colors.gray} ${colors.white};
@@ -68,6 +69,7 @@ const GlobalStyles = createGlobalStyle`
 
   *::-webkit-scrollbar {
     width: 0.5rem;
+    height: 0.5rem;
   }
 
   *::-webkit-scrollbar-track {

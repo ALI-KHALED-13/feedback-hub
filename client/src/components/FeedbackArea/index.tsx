@@ -1,17 +1,19 @@
-import Panel from "../Panel";
-import Feedback from "../Feedback";
-import { StyledFeedbackArea } from "./styled";
-import { IFeedback } from "types";
+import { IFeedback } from 'types';
+import Panel from '../Panel';
+import Feedback from '../Feedback';
+import { StyledFeedbackArea } from './styled';
 
-const feedbacks: IFeedback[] = [
+interface FeedbackAreaProps {
+  feedback: IFeedback[];
+}
 
-];
-
-const FeedbackArea = () => {
-  return <StyledFeedbackArea>
-    <Panel />
-    <Feedback feedbacks={feedbacks} />
-  </StyledFeedbackArea>
+const FeedbackArea = ({feedback}: FeedbackAreaProps) => {
+  return (
+    <StyledFeedbackArea>
+      <Panel feedbackNumber={feedback.length} />
+      <Feedback feedback={feedback} />
+    </StyledFeedbackArea>
+  );
 };
 
 export default FeedbackArea;

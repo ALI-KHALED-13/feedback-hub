@@ -1,4 +1,5 @@
-import styled from "styled-components";
+import styled from 'styled-components';
+import { setHeading3 } from '../Typo';
 
 export const StyledPanel = styled.section`
   position: relative;
@@ -8,7 +9,7 @@ export const StyledPanel = styled.section`
   min-height: 7.2rem;
   padding: 1.4rem 1.6rem 1.4rem 6.3rem;
   border-radius: 1rem;
-  background-color: ${(props) => props.theme.spaceNavy};
+  background-color: ${({theme}) => theme.spaceNavy};
 
   &::before {
     position: absolute;
@@ -27,4 +28,9 @@ export const StyledPanelWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 3.8rem;
+`;
+
+export const StyledPanelHeading = styled.h3`
+  ${setHeading3()};
+  color: ${({theme}) => theme.white};
 `;

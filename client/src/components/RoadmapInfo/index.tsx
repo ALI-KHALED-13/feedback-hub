@@ -1,37 +1,39 @@
-import { Heading3 } from "../Typo";
+import { IStatus } from 'types';
 import {
   StyledRoadmapInfo,
   StyledRoadmapHeader,
+  StyledRoadmapHeading,
   StyledLink,
   StyledStatusList,
   StyledStatusItem,
   StyledStatusName,
   StyledStatusNumber,
-} from "./styled";
-import { Link } from "react-router-dom";
-import { IStatus } from "types";
+} from './styled';
 
-type RoadmapInfoProps = {
+interface RoadmapInfoProps {
   statuses: IStatus[];
 }
 
 const RoadmapInfo = ({statuses}: RoadmapInfoProps) => {
   return (
     <StyledRoadmapInfo>
+
       <StyledRoadmapHeader>
-        <Heading3>Roadmap</Heading3>
-        <StyledLink as={Link} to="/roadmap">View</StyledLink>
+        <StyledRoadmapHeading>Roadmap</StyledRoadmapHeading>
+        <StyledLink to="/roadmap">View</StyledLink>
       </StyledRoadmapHeader>
+
       <StyledStatusList>
         {statuses.map((status) => {
           return (
-            <StyledStatusItem key={status.id}>
+            <StyledStatusItem key={status._id}>
               <StyledStatusName color={status.color}>{status.name}</StyledStatusName>
               <StyledStatusNumber>{status.reviewsNumber}</StyledStatusNumber>
             </StyledStatusItem>
           );
         })}
       </StyledStatusList>
+      
     </StyledRoadmapInfo>
   );
 };

@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { StyledSemiBoldParagraph } from "../Typo";
+import styled from 'styled-components';
+import { setStyledSemiBoldParagraph } from '../Typo';
 
 export const StyledTag = styled.div`
   display: inline-flex;
@@ -11,20 +11,22 @@ export const StyledTag = styled.div`
   }
 
   input:checked + label {
-    background-color: ${props => props.theme.blue};
-    color: ${props => props.theme.white};
+    background-color: ${({theme}) => theme.blue};
+    color: ${({theme}) => theme.white};
   }
 `;
 
-export const StyledLabel = styled(StyledSemiBoldParagraph)`
+export const StyledLabel = styled.label`
+  ${setStyledSemiBoldParagraph()};
   padding: 0.6rem 1.6rem;
   border: none;
   border-radius: 1rem;
+  background-color: ${({theme}) => theme.lightGray};
+  color: ${({theme}) => theme.blue};
+  text-transform: capitalize;
   cursor: pointer;
-  background-color: ${props => props.theme.lightGray};
-  color: ${props => props.theme.blue};
 
   &:hover {
-    background-color: ${props => props.theme.grayishBlue};
+    background-color: ${({theme}) => theme.grayishBlue};
   }
 `;

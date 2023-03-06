@@ -1,15 +1,18 @@
-import Tag from "../Tag";
-import { StyledTagsFilter } from "./styled";
-import { ITag } from "types";
+import { ITag } from 'types';
+import Tag from '../Tag';
+import { StyledTagsFilter } from './styled';
 
-type TagsFilterProps = {
+interface TagsFilterProps {
   tags: ITag[];
 };
+
+// functionality is to be done
 
 const TagsFilter = ({tags}: TagsFilterProps) => {
   return (
     <StyledTagsFilter>
-      {tags.map((tag: ITag) => <Tag key={tag.id} label={tag.name} />)}
+      <Tag label="All" />
+      {tags.map((tag: ITag) => <Tag key={tag._id} label={tag.name} />)}
     </StyledTagsFilter>
   );
 };

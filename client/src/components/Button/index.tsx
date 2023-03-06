@@ -1,13 +1,14 @@
-import { StyledButton } from "./styled";
+import { StyledButton } from './styled';
 
-type ButtonProps = {
+interface ButtonProps {
   text: string;
   color: string;
-};
+  hoverColor: string;
+}
 
-const Button = ({text, color}: ButtonProps) => {
+const Button = ({text, color, hoverColor}: ButtonProps) => {
   return (
-    <StyledButton as="button" color={color}>{text}</StyledButton>
+    <StyledButton color={color} hoverColor={hoverColor}>{text}</StyledButton>
   );
 };
 

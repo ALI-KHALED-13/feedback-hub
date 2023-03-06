@@ -1,18 +1,21 @@
-import { StyledSelectLabel, StyledOption, StyledSelect } from "./styled";
+import { StyledSelectLabel, StyledOption, StyledSelect } from './styled';
 
-type DropdownProps = {
+interface DropdownProps {
   options: string[];
   label: string;
 }
 
+// probably will be changed to a custom one, not standard select,
+// because we can't really style the options part
+
 const Select = ({options, label}: DropdownProps) => {
   return (
-    <StyledSelectLabel as="label">
+    <StyledSelectLabel>
       {label}
       <StyledSelect>
-        {options.map((option) => {
+        {options.map((option, i) => {
           return (
-            <StyledOption as="option">{option}</StyledOption>
+            <StyledOption as="option" key={i}>{option}</StyledOption>
           );
         })}
       </StyledSelect>
