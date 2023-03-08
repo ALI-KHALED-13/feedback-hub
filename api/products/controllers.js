@@ -3,14 +3,24 @@ const User = require("../../models/user");
 const { DB404Error } = require("../utils/handleErrors");
 
 const getAllProducts = async (req, res) => {
-  const products = await Product.find(req.query).populate("owner"); // should I populate contributers too ? main page or in the feedback board? design decision
+  const products = await Product.find(req.query).populate("owner", {name: 1, pfp: 1})// should I populate contributers too ? main page or in the feedback board? design decision
   res.status(200).json(products);
 }
 
 const getProduct = async (req, res) => {
   
   const id = req.params.id;
-  const product = await Product.findById(id).populate("feedback");
+  const product = await Product.findById(id).populate([
+    {
+      path: "feedback",
+      model: "feedback",
+      populate: {
+        path: "status",
+        model: "status",
+        select: "name",
+      }
+    }
+  ]);
 
   if (product === null) throw new DB404Error("product is not found")
 

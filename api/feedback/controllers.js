@@ -18,7 +18,7 @@ const getManyFeedbacks = async (req, res)=> {
 
 const getFeedback = async (req, res) => {
   const id = req.params.id;
-  const feedback = await Feedback.findById(id);//.populate("comments");
+  const feedback = await Feedback.findById(id).populate("status");//.populate("comments");
   
   if (!feedback) throw new DB404Error("feedback can't be found");
 
@@ -56,7 +56,9 @@ const modifyFeedback = async (req, res) => {
   
   if (targetFeedback === null) throw new DB404Error("Feedback doesn't exist");
 
-  if (targetFeedback.tags.join(",") !== req.body.tags.join(",")){
+  if (  req.body.tags && 
+      targetFeedback.tags.join(",") !== req.body.tags.join(",")
+  ){
     req.body.tags = req.body.tags.map(tag=> tag.toLowerCase());
 
     for (let tagName of req.body.tags){
@@ -68,10 +70,10 @@ const modifyFeedback = async (req, res) => {
     }
   }
 
-  targetFeedback = {...targetFeedback, ...req.body};
+  const modifiedDoc = Object.assign(targetFeedback, req.body);
   
-  targetFeedback.save();
-  res.status(200).json(`feedback was updated succefully`)
+  await modifiedDoc.save();
+  res.status(200).json(modifiedDoc)
 
 }
 

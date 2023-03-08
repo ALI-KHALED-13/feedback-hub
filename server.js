@@ -10,6 +10,7 @@ const productsRoutes = require("./api/products/routes");
 const feedbacksRoutes = require("./api/feedback/routes");
 const usersRoutes = require("./api/users/routes");
 const tagsRoutes = require("./api/tags/routes");
+const statusRoutes = require("./api/status/routes");
 
 const app = express();
 
@@ -35,7 +36,9 @@ app.use("/api/feedback", feedbacksRoutes);
 
 app.use("/api/users", usersRoutes);
 
-app.use("/api/tags", tagsRoutes)
+app.use("/api/tags", tagsRoutes);
+
+app.use("/api/status", statusRoutes)
 
 
 
