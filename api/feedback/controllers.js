@@ -47,7 +47,7 @@ const addFeedback = async (req, res) => {
   targetProduct.save();
   owner.feedbackHistory = [...owner.feedbackHistory, feedback.id];
   owner.save();
-  res.status(200).json(feedback);
+  res.status(201).json(feedback);
 }
 
 const modifyFeedback = async (req, res) => {
@@ -64,8 +64,7 @@ const modifyFeedback = async (req, res) => {
     for (let tagName of req.body.tags){
       const tagInDB = await Tag.exists({name: tagName})
       if (tagInDB === null){ // it's a newly added tag, add it to tags collection 
-        const tag = await Tag.create({name: tagName})
-        tag.save();
+        await Tag.create({name: tagName})
       }
     }
   }
@@ -88,14 +87,14 @@ const deleteFeedback = async(req, res) => {
   } 
   if (targetProduct){ // only excute this block if the product is still present (as it might be deleted at one point and we are keeping the feedback)
     targetProduct.feedback = targetProduct.feedback.filter(feedbackId=> feedbackId !== id);
-    targetProduct.save();
+    await targetProduct.save();
   }
 
   owner.feedbackHistory = owner.feedbackHistory.filter(feedbackId=> feedbackId !== id);
-  owner.save();
+  await owner.save();
 
   await feedback.remove();
-  res.status(200).json(`feedback was updated succefully`)
+  res.status(200).json(`feedback was deleted succefully`)
 }
 
 
