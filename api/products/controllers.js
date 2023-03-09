@@ -35,7 +35,7 @@ const addProduct = async (req, res) => {
   const product = await Product.create(req.body);
 
   owner.products = [...owner.products, product.id]
-  owner.save();
+  await owner.save();
   res.status(200).json(product); 
 }
 

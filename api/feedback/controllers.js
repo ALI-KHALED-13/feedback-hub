@@ -39,14 +39,13 @@ const addFeedback = async (req, res) => {
   for (let tagName of feedback.tags){
     const tagInDB = await Tag.exists({name: tagName})
     if (tagInDB === null){ // it's a newly added tag, add it to tags collection 
-      const tag = await Tag.create({name: tagName})
-      tag.save();
+      await Tag.create({name: tagName})
     }
   }
   targetProduct.feedback = [...targetProduct.feedback, feedback.id];
-  targetProduct.save();
+  await targetProduct.save();
   owner.feedbackHistory = [...owner.feedbackHistory, feedback.id];
-  owner.save();
+  await owner.save();
   res.status(201).json(feedback);
 }
 
