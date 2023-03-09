@@ -18,7 +18,10 @@ const getManyFeedbacks = async (req, res)=> {
 
 const getFeedback = async (req, res) => {
   const id = req.params.id;
-  const feedback = await Feedback.findById(id).populate("comments");
+  const feedback = await Feedback.findById(id).populate("status");//.populate("comments");
+  
+  if (!feedback) throw new DB404Error("feedback can't be found");
+
   res.status(200).json(feedback);
 }
 
@@ -36,48 +39,61 @@ const addFeedback = async (req, res) => {
   for (let tagName of feedback.tags){
     const tagInDB = await Tag.exists({name: tagName})
     if (tagInDB === null){ // it's a newly added tag, add it to tags collection 
-      const tag = await Tag.create({name: tagName})
-      tag.save();
+      await Tag.create({name: tagName})
     }
   }
   targetProduct.feedback = [...targetProduct.feedback, feedback.id];
-  targetProduct.save();
+  await targetProduct.save();
   owner.feedbackHistory = [...owner.feedbackHistory, feedback.id];
-  owner.save();
-  res.status(200).json(feedback);
+  await owner.save();
+  res.status(201).json(feedback);
 }
 
 const modifyFeedback = async (req, res) => {
-  try {
-    const id = req.params.id
-    const targetFeedback = await Feedback.findById(id);
-    if (targetFeedback === null) throw new DB404Error("Feedback doesn't exist");
+  const id = req.params.id
+  const targetFeedback = await Feedback.findById(id);
+  
+  if (targetFeedback === null) throw new DB404Error("Feedback doesn't exist");
 
-    if (targetFeedback.tags.join(",") !== req.body.tags.join(",")){
-      req.body.tags = req.body.tags.map(tag=> tag.toLowerCase());
+  if (  req.body.tags && 
+      targetFeedback.tags.join(",") !== req.body.tags.join(",")
+  ){
+    req.body.tags = req.body.tags.map(tag=> tag.toLowerCase());
 
-      for (let tagName of req.body.tags){
-        const tagInDB = await Tag.exists({name: tagName})
-        if (tagInDB === null){ // it's a newly added tag, add it to tags collection 
-          const tag = await Tag.create({name: tagName})
-          tag.save();
-        }
+    for (let tagName of req.body.tags){
+      const tagInDB = await Tag.exists({name: tagName})
+      if (tagInDB === null){ // it's a newly added tag, add it to tags collection 
+        await Tag.create({name: tagName})
       }
     }
-
-    targetFeedback = {...targetFeedback, ...req.body};
-    
-    targetFeedback.save();
-    res.status(200).json(`${property} was updated succefully`)
-  } catch (err){
-    res.status(400).json({message: err.message})
   }
+
+  const modifiedDoc = Object.assign(targetFeedback, req.body);
+  
+  await modifiedDoc.save();
+  res.status(200).json(modifiedDoc)
 
 }
 
-const deleteFeedback = (req, res) => {
-  const id = req.params.id
-  res.json({msg: "deleted feedback " + id})
+const deleteFeedback = async(req, res) => {
+  const id = req.params.id;
+  const feedback = await Feedback.findById(id);
+  const owner = await User.findById(req.body.owner);
+  const targetProduct = await Product.findById(req.body.targetProduct);
+  
+  if (!owner || !feedback) {
+    throw new DB404Error((owner? "feedback":"owner") +" id is missing or not found")
+  } 
+  if (targetProduct){ // only excute this block if the product is still present (as it might be deleted at one point and we are keeping the feedback)
+    targetProduct.feedback = targetProduct.feedback.filter(feedbackId=> feedbackId !== id);
+    await targetProduct.save();
+  }
+
+  owner.feedbackHistory = owner.feedbackHistory.filter(feedbackId=> feedbackId !== id);
+  await owner.save();
+
+  await feedback.remove();
+  res.status(200).json(`feedback was deleted succefully`)
 }
 
 

@@ -25,6 +25,7 @@ const feedbackSchema = new mongoose.Schema({
   status: {
     type: mongoose.Types.ObjectId,
     ref: "status",
+    required: true
   },
   upvotes: {
       type: [mongoose.Types.ObjectId],
