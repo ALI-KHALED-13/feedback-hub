@@ -11,7 +11,7 @@ const addTags = async (req, res)=> { // two accepted formulas {name: "lena"} || 
   for (let tagName of tagsToBeAdded){
     await Tag.create({name: tagName})
   }
-  res.status(200).json("tag(s) added successfully")
+  res.status(201).json({message:"tag(s) added successfully"})
 }
 
 

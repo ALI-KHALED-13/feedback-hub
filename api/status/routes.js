@@ -2,6 +2,7 @@ const express = require("express");
 const { catchErrors } = require("../utils/handleErrors");
 
 const {getAllStatuses, createNewStatus, modifyStatus} = require("./controllers");
+const auth = require("../../middlewares/auth");
 
 const router = express.Router();
 
@@ -9,9 +10,9 @@ const router = express.Router();
 router.get("/", catchErrors(getAllStatuses));
 
 
-router.post("/", catchErrors(createNewStatus));
+router.route("/").post(auth, catchErrors(createNewStatus));
 
-router.put("/:id", catchErrors(modifyStatus));
+router.route("/:id").put(auth, catchErrors(modifyStatus));
 
 
 module.exports = router;

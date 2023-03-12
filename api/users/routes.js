@@ -1,12 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../../models/user");
+
 const { catchErrors } = require("../utils/handleErrors");
+const { register , login} = require("./controllers");
 
 // add a new user
-router.post("/", catchErrors(async (req, res)=> {
-  const user = await User.create(req.body);
-  res.status(200).json(user);
-}));
+router.post("/register", catchErrors(register));
+
+// login
+router.post("/login", catchErrors(login));
 
 module.exports = router;

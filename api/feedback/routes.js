@@ -9,7 +9,7 @@ const {
   deleteFeedback,
   getManyFeedbacks
 } = require("./controllers");
-
+const auth = require("../../middlewares/auth");
 
 
 // get many feedbacks havinga common property/field
@@ -18,13 +18,14 @@ router.get("/", catchErrors(getManyFeedbacks));
 //get one Feedback
 router.get("/:id", catchErrors(getFeedback));
 
+
 // add a new Feedback stream
-router.post("/", catchErrors(addFeedback));
+router.route("/").post(auth, catchErrors(addFeedback));
 
 // modify a Feedback info (contributers, title?)
-router.put("/:id", catchErrors(modifyFeedback))
+router.route("/:id").put(auth, catchErrors(modifyFeedback))
 
 // delete a Feedback 
-router.delete("/:id", catchErrors(deleteFeedback))
+router.route("/:id").delete(auth, catchErrors(deleteFeedback))
 
 module.exports = router;

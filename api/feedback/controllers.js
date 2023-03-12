@@ -1,7 +1,7 @@
 const Feedback = require("../../models/feedback");
 const User = require("../../models/user");
 const Tag = require("../../models/tag");
-const { DB404Error } = require("../utils/handleErrors");
+const { DB404Error, UnauthorizedError } = require("../utils/handleErrors");
 const Product = require("../../models/product");
 
 // seems obsolete now but will see if there is use for it in the future
@@ -27,11 +27,16 @@ const getFeedback = async (req, res) => {
 
 const addFeedback = async (req, res) => {
 
-  const owner = await User.findById(req.body.owner);
+  const owner = req.user;
+  if (!owner){
+    throw new UnauthorizedError("you must be logged in to add a feedback");
+  }
+  req.body.owner = owner;
+
   const targetProduct = await Product.findById(req.body.targetProduct);
   
-  if (!owner || !targetProduct) {
-    throw new DB404Error((owner? "product":"owner") +" id is missing or not found")
+  if (!targetProduct) {
+    throw new DB404Error("this product is probably deleted");
   }
   const feedback = await Feedback.create(req.body);
   feedback.tags = feedback.tags?.map(tag=> tag.toLowerCase()) || [];
@@ -53,7 +58,10 @@ const modifyFeedback = async (req, res) => {
   const id = req.params.id
   const targetFeedback = await Feedback.findById(id);
   
-  if (targetFeedback === null) throw new DB404Error("Feedback doesn't exist");
+  if (targetFeedback === null) {
+    throw new DB404Error("Feedback doesn't exist");
+  }
+
 
   if (  req.body.tags && 
       targetFeedback.tags.join(",") !== req.body.tags.join(",")
@@ -78,22 +86,30 @@ const modifyFeedback = async (req, res) => {
 const deleteFeedback = async(req, res) => {
   const id = req.params.id;
   const feedback = await Feedback.findById(id);
-  const owner = await User.findById(req.body.owner);
+  if (!feedback) {
+    throw new DB404Error("feedback id is missing or not found")
+  } 
+
+  const user = req.user;
+  if (!user){
+    throw new UnauthorizedError("you must be logged in to add a feedback");
+  }
+  if (user.id !== feedback.owner){
+    throw new UnauthorizedError("only the feedback owner can delete it")
+  }
+
   const targetProduct = await Product.findById(req.body.targetProduct);
   
-  if (!owner || !feedback) {
-    throw new DB404Error((owner? "feedback":"owner") +" id is missing or not found")
-  } 
   if (targetProduct){ // only excute this block if the product is still present (as it might be deleted at one point and we are keeping the feedback)
     targetProduct.feedback = targetProduct.feedback.filter(feedbackId=> feedbackId !== id);
     await targetProduct.save();
   }
 
-  owner.feedbackHistory = owner.feedbackHistory.filter(feedbackId=> feedbackId !== id);
-  await owner.save();
+  user.feedbackHistory = user.feedbackHistory.filter(feedbackId=> feedbackId !== id);
+  await user.save();
 
   await feedback.remove();
-  res.status(200).json(`feedback was deleted succefully`)
+  res.status(200).json({message:`feedback was deleted succefully`})
 }
 
 

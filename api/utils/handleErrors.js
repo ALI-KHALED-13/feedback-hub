@@ -5,6 +5,19 @@ class DB404Error extends Error {
     this.code = 404
   }
 }
+class BadReqError extends Error {
+  constructor (name, description = 'data no valid') {
+    super(name, description);
+    this.code = 400
+  }
+}
+
+class UnauthorizedError extends Error {
+  constructor (name, description = 'not permitted') {
+    super(name, description);
+    this.code = 401
+  }
+}
 
 const handleError =(err, res)=> {
   let statusCode, message;
@@ -25,6 +38,9 @@ const handleError =(err, res)=> {
       statusCode = 422;
       message = `this ${Object.keys(err.keyValue)[0]} is already used before!`;
       break;
+    case 401:
+      statusCode = 401;
+      message = err.message;
     case 404:
       statusCode = 404;
       message = err.message;
@@ -41,4 +57,9 @@ const catchErrors =(controller)=> (req, res, next)=> {
   return Promise.resolve(controller(req, res, next)).catch((err)=> handleError(err, res));
 }
 
-module.exports = {catchErrors, DB404Error};
+module.exports = {
+  catchErrors,
+  DB404Error,
+  BadReqError,
+  UnauthorizedError
+};

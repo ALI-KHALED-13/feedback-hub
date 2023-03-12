@@ -10,7 +10,7 @@ const getAllStatuses = async (req, res)=> {
 
 const createNewStatus = async (req, res)=> {
  await Status.create(req.body);
- res.status(200).json("new status created succefully") 
+ res.status(201).json({message:"new status created succefully"}) 
 }
 
 const modifyStatus = async(req, res)=> {
@@ -22,7 +22,7 @@ const modifyStatus = async(req, res)=> {
   const modifiedDoc = Object.assign(targetStatus, req.body);
 
   await modifiedDoc.save();
-  res.status(200).json(`status was updated succefully`);
+  res.status(200).json({message: `status was updated succefully`});
 }
 
 
