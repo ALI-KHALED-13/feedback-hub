@@ -57,9 +57,9 @@ const modifyFeedback = async (req, res) => {
   if (feedback === null) {
     throw new DB404Error("Feedback doesn't exist");
   }
-
-  await checkActionAccess({user: req.user, feedback, fields:req.body})
-  // if no errors throw nf rom the above function then we do the modification
+  const user = req.user;
+  await checkActionAccess({user, feedback, fields:req.body})
+  // if no errors thrown from the above function then we do the modification
 
   if (  req.body.tags && 
       feedback.tags.join(",") !== req.body.tags.join(",")
@@ -69,6 +69,16 @@ const modifyFeedback = async (req, res) => {
 
   const modifiedDoc = Object.assign(feedback, req.body);
   
+  if (req.body.upvotes){// if its about doing/undoing an upvote
+    const isUndoing = user.upvotesHistory.some(FBID=> FBID.equals(feedback._id));
+    if (isUndoing){
+      user.upvotesHistory = user.upvotesHistory.filter(FBID=> !FBID.equals(feedback._id))
+    }else {
+      user.upvotesHistory = user.upvotesHistory.concat(feedback._id);
+    }
+    await user.save();
+  }
+
   await modifiedDoc.save();
   res.status(200).json(modifiedDoc)
 
