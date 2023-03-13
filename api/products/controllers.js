@@ -29,14 +29,12 @@ const getProduct = async (req, res) => {
 
 const addProduct = async (req, res) => {
   const owner = req.user;
-  if (owner === null) {
-    throw new UnauthorizedError("not permitted, are you logged in?")
-  }
-  req.body.owner = owner;
+
+  req.body.owner = owner._id;
 
   const product = await Product.create(req.body);
 
-  owner.products = [...owner.products, product.id]
+  owner.products = [...owner.products, product._id]
   await owner.save();
   res.status(201).json(product); 
 }
@@ -50,7 +48,7 @@ const modifyProduct = async (req, res) => {
   }
   
   const user = req.user;
-  if (user !== targetProduct.owner) {
+  if (!targetProduct.owner.equals(user._id)) {
     throw new UnauthorizedError(`not permitted, only the owner can edit this product`)
   }
 
@@ -69,11 +67,12 @@ const deleteProduct = async (req, res) => {
   }
   
   const user = req.user;
-  if (user !== targetProduct.owner) {
+  
+  if (!targetProduct.owner.equals(user._id)) {
     throw new UnauthorizedError(`not permitted, only the owner can delete this product`)
   }
 
-  user.products = user.products.filter(pdctId=> pdctId !== targetProduct.id);
+  user.products = user.products.filter(pdctId=> !pdctId.equals(targetProduct._id));
   await user.save();
 
   await targetProduct.remove();

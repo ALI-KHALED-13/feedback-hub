@@ -3,14 +3,14 @@ const User = require("../models/user");
 
 const auth = async(req, res, next)=> {
   // verify authentication
-  const {autherization} = req.headers;
+  const {authorization} = req.headers;
   
-  if (!autherization) {
+  if (!authorization) {
     return res.status(401).json({message: "Authorization token required, are you logged in?"})
   }
   
   try {
-    const tokenPassed = autherization.slice(autherization.indexOf(" ") + 1);
+    const tokenPassed = authorization.slice(authorization.indexOf(" ") + 1);
     const {_id} = jwt.verify(tokenPassed, process.env.SECRET);
 
     req.user = await User.findById(_id);

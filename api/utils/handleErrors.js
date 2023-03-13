@@ -41,6 +41,7 @@ const handleError =(err, res)=> {
     case 401:
       statusCode = 401;
       message = err.message;
+      break;
     case 404:
       statusCode = 404;
       message = err.message;

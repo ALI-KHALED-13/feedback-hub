@@ -8,6 +8,11 @@ const { BadReqError, DB404Error, UnauthorizedError } = require("../utils/handleE
 const createToken =(_id)=> {
   return jwt.sign({_id}, process.env.SECRET, {expiresIn: "3d"})
 }
+const hashPassword = async (password)=> {
+  const saltStr = await bcrypt.genSalt();
+  const hashedPassword = await bcrypt.hash(password, saltStr);
+  return hashedPassword;
+}
 
 const register = async (req, res)=> {
   const {email, password} = req.body;
@@ -16,9 +21,8 @@ const register = async (req, res)=> {
   if (!isEmail(email)) throw new BadReqError("Email is not valid");
 
   // hash passowrd
-  const saltStr = await bcrypt.genSalt();
-  const hashedPassword = await bcrypt.hash(password, saltStr);
-  req.body.password = hashedPassword;
+  
+  req.body.password = await hashPassword(password);
 
   const user = await User.create(req.body);
   
@@ -27,6 +31,7 @@ const register = async (req, res)=> {
 
   res.status(201).json({token, user});
 }
+
 
 const login = async (req, res)=> {
   const {identifier, password} = req.body; // identifier could be the email or username
@@ -54,5 +59,22 @@ const login = async (req, res)=> {
   res.status(200).json({token, user});
 }
 
+const updateUserInfo = async (req, res)=> {
+  const id = req.params.id;
 
-module.exports = {register, login};
+  const user = req.user;
+  if (user.id !== id){
+    throw new UnauthorizedError("you can edit your own info only")
+  }
+
+  if (req.body.password){
+    req.body.password = await hashPassword(req.body.password);
+  }
+  const updatedUser = Object.assign(user, req.body);
+
+  await updatedUser.save();
+  res.status(200).send(updatedUser);
+}
+
+
+module.exports = {register, login, updateUserInfo};

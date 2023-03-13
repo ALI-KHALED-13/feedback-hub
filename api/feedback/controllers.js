@@ -3,6 +3,7 @@ const User = require("../../models/user");
 const Tag = require("../../models/tag");
 const { DB404Error, UnauthorizedError } = require("../utils/handleErrors");
 const Product = require("../../models/product");
+const { checkForNewTags, checkActionAccess } = require("./utils");
 
 // seems obsolete now but will see if there is use for it in the future
 const getManyFeedbacks = async (req, res)=> {
@@ -27,56 +28,46 @@ const getFeedback = async (req, res) => {
 
 const addFeedback = async (req, res) => {
 
-  const owner = req.user;
-  if (!owner){
-    throw new UnauthorizedError("you must be logged in to add a feedback");
-  }
-  req.body.owner = owner;
+  const user = req.user;
+
+  req.body.owner = user._id;
 
   const targetProduct = await Product.findById(req.body.targetProduct);
   
   if (!targetProduct) {
     throw new DB404Error("this product is probably deleted");
   }
+
+  checkForNewTags(req.body);
   const feedback = await Feedback.create(req.body);
-  feedback.tags = feedback.tags?.map(tag=> tag.toLowerCase()) || [];
-  
-  for (let tagName of feedback.tags){
-    const tagInDB = await Tag.exists({name: tagName})
-    if (tagInDB === null){ // it's a newly added tag, add it to tags collection 
-      await Tag.create({name: tagName})
-    }
-  }
-  targetProduct.feedback = [...targetProduct.feedback, feedback.id];
+
+  targetProduct.feedback = [...targetProduct.feedback, feedback._id];
   await targetProduct.save();
-  owner.feedbackHistory = [...owner.feedbackHistory, feedback.id];
-  await owner.save();
+
+  user.feedbackHistory = [...user.feedbackHistory, feedback._id];
+  await user.save();
+
   res.status(201).json(feedback);
 }
 
 const modifyFeedback = async (req, res) => {
   const id = req.params.id
-  const targetFeedback = await Feedback.findById(id);
+  const feedback = await Feedback.findById(id);
   
-  if (targetFeedback === null) {
+  if (feedback === null) {
     throw new DB404Error("Feedback doesn't exist");
   }
 
+  await checkActionAccess({user: req.user, feedback, fields:req.body})
+  // if no errors throw nf rom the above function then we do the modification
 
   if (  req.body.tags && 
-      targetFeedback.tags.join(",") !== req.body.tags.join(",")
+      feedback.tags.join(",") !== req.body.tags.join(",")
   ){
-    req.body.tags = req.body.tags.map(tag=> tag.toLowerCase());
-
-    for (let tagName of req.body.tags){
-      const tagInDB = await Tag.exists({name: tagName})
-      if (tagInDB === null){ // it's a newly added tag, add it to tags collection 
-        await Tag.create({name: tagName})
-      }
-    }
+    checkForNewTags(req.body);
   }
 
-  const modifiedDoc = Object.assign(targetFeedback, req.body);
+  const modifiedDoc = Object.assign(feedback, req.body);
   
   await modifiedDoc.save();
   res.status(200).json(modifiedDoc)
@@ -91,21 +82,19 @@ const deleteFeedback = async(req, res) => {
   } 
 
   const user = req.user;
-  if (!user){
-    throw new UnauthorizedError("you must be logged in to add a feedback");
-  }
-  if (user.id !== feedback.owner){
+
+  if (!user._id.equals(feedback.owner)){
     throw new UnauthorizedError("only the feedback owner can delete it")
   }
 
-  const targetProduct = await Product.findById(req.body.targetProduct);
+  const targetProduct = await Product.findById(feedback.targetProduct);
   
   if (targetProduct){ // only excute this block if the product is still present (as it might be deleted at one point and we are keeping the feedback)
-    targetProduct.feedback = targetProduct.feedback.filter(feedbackId=> feedbackId !== id);
+    targetProduct.feedback = targetProduct.feedback.filter(feedbackId=> !feedbackId.equals(id) );
     await targetProduct.save();
   }
 
-  user.feedbackHistory = user.feedbackHistory.filter(feedbackId=> feedbackId !== id);
+  user.feedbackHistory = user.feedbackHistory.filter(feedbackId=> !feedbackId.equals(id));
   await user.save();
 
   await feedback.remove();
