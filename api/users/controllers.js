@@ -3,10 +3,15 @@ const bcrypt = require("bcrypt");
 const isEmail = require("validator/lib/isEmail");
 const jwt = require("jsonwebtoken");
 
+
 const { BadReqError, DB404Error, UnauthorizedError } = require("../utils/handleErrors");
 
-const createToken =(_id)=> {
-  return jwt.sign({_id}, process.env.SECRET, {expiresIn: "3d"})
+const createToken =(_id, toBeRemembered)=> {
+  return jwt.sign(
+    {_id},
+    process.env.SECRET,
+    {expiresIn: toBeRemembered? "7d":"1d"}
+  )
 }
 const hashPassword = async (password)=> {
   const saltStr = await bcrypt.genSalt();
@@ -51,12 +56,24 @@ const login = async (req, res)=> {
   if (!isMatching){
     throw new UnauthorizedError("incorrect passowrd")
   }
+  const toBeRemembered = req.body.rememberMe;
   // create a token
-  const token = createToken(user._id);
+  const token = createToken(user._id, toBeRemembered);
+
+  res.cookie("token", token, {
+    httpOnly: true,
+    // secure: true, maybe we need this
+    maxAge: (toBeRemembered? 7 : 1) * 24 * 60 * 60 * 1000
+  })
   
   user.password = undefined; // not to return this field to the frontend
   
-  res.status(200).json({token, user});
+  res.status(200).json(user);
+}
+
+const logout = async (req, res)=> {
+  res.clearCookie("token");
+  res.status(200).json({message: "logged out successfully"})
 }
 
 const updateUserInfo = async (req, res)=> {
@@ -77,4 +94,4 @@ const updateUserInfo = async (req, res)=> {
 }
 
 
-module.exports = {register, login, updateUserInfo};
+module.exports = {register, login, updateUserInfo, logout};
